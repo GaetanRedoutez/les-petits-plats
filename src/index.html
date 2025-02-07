@@ -4,29 +4,65 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Les Petits Plats</title>
+
     <link rel="stylesheet" href="index.css" />
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <link
-      href="https://fonts.googleapis.com/css2?family=Anton&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope&display=swap"
       rel="stylesheet"
     />
+
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script type="module" src="./js/index.js" defer></script>
   </head>
 
-  <body class="max-w-[1440px] font-[Anton] text-[#FFD15B]">
+  <body class="max-w-[1440px] font-[Anton] min-h-screen mx-auto">
     <header
-      class="bg-[url(../public/images/assets/background_img.webp)] bg-fit h-[667px] flex flex-col justify-center"
+      class="bg-[url(../public/images/assets/background_img.webp)] bg-cover bg-center h-[667px] flex flex-col justify-center overflow-hidden"
     >
-      <sh1 class="text-violet-400 hidden">Les Petits Plats</sh1>
-      <img
-        class="w-[207px] h-[25px]"
-        src="../public/images/assets/logo.svg"
-        alt="Logo Les Petis Plats"
-      />
-      <h2>
-        CHERCHEZ PARMI PLUS DE 1500 RECETTES DU QUOTIDIEN,SIMPLES ET DÉLICIEUSES
-      </h2>
-      <input type="text" />
+      <div class="grid grid-rows-3 h-full">
+        <div class="self-start mt-12 ml-16">
+          <img
+            class="w-[207px] h-[25px]"
+            src="../public/images/assets/logo.svg"
+            alt="Logo Les Petis Plats"
+          />
+          <h1 class="hidden">Les Petits Plats</h1>
+        </div>
+        <div class="self-center w-full">
+          <h2
+            class="text-amber-300 text-[44px]/[66px] max-w-[890px] text-center mx-auto"
+          >
+            CHERCHEZ PARMI PLUS DE 1500 RECETTES DU QUOTIDIEN, SIMPLES ET
+            DÉLICIEUSES
+          </h2>
+        </div>
+
+        <div class="flex justify-center font-[Manrope]">
+          <div class="relative">
+            <form class="relative">
+              <input
+                id="search"
+                type="text"
+                class="bg-white w-[954px] h-[72px] rounded-xl pl-9 pr-14 border border-gray-300 focus:outline-none"
+                placeholder="Rechercher une recette, un ingrédient, ..."
+              />
+              <button type="submit" class="cursor-pointer">
+                <img
+                  src="../public/images/assets/search.svg"
+                  alt="Search Icon"
+                  class="absolute right-4 top-[10px]"
+                />
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
     </header>
-    <main></main>
+    <main class="flex flex-grow min-h-screen bg-gray-200 pb-52">
+      <section
+        id="recipes"
+        class="grid grid-cols-3 gap-12 mx-24 mt-14"
+      ></section>
+    </main>
   </body>
 </html>
