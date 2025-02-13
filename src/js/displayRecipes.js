@@ -1,5 +1,3 @@
-import recipes from './data/recipes.js';
-
 /**
  * Ajoute des classes à un élément.
  * @param {HTMLElement} element - L'élément auquel ajouter des classes.
@@ -157,14 +155,18 @@ const createArticle = (recipe) => {
  * Affiche toutes les recettes.
  * @param {Array} recipes - La liste des recettes.
  */
-const renderRecipes = (recipes) => {
+export const renderRecipes = (recipes, inputValue) => {
   const container = document.querySelector('#recipes');
-  recipes.forEach((recipe) => {
-    const article = createArticle(recipe);
-    container.appendChild(article);
-  });
+  const infoText = document.createElement('p');
+  container.innerHTML = ''; // Nettoie le contenu précédent
+  console.log(recipes.length, inputValue);
+  if (recipes.length >= 1) {
+    recipes.forEach((recipe) => {
+      const article = createArticle(recipe);
+      container.appendChild(article);
+    });
+  } else {
+    infoText.textContent = `Aucune recette ne contient ${inputValue} vous pouvez chercher « tarte aux pommes », « poisson », etc.`;
+    container.appendChild(infoText);
+  }
 };
-
-document.addEventListener('DOMContentLoaded', () => {
-  renderRecipes(recipes);
-});
