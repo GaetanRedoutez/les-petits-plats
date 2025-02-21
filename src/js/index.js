@@ -13,7 +13,7 @@ const tagsContainer = document.querySelector('#tagsContainer');
 
 // Afficher les recettes au chargement de la page
 document.addEventListener('DOMContentLoaded', () => {
-  renderRecipes(getFilteredRecipes(inputElement));
+  renderRecipes(getFilteredRecipes());
 });
 
 // Gestion de la recherche
