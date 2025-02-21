@@ -158,8 +158,8 @@ const createArticle = (recipe) => {
 export const renderRecipes = (recipes, inputValue) => {
   const container = document.querySelector('#recipes');
   const infoText = document.createElement('p');
-  container.innerHTML = ''; // Nettoie le contenu précédent
-  console.log(recipes.length, inputValue);
+  container.innerHTML = '';
+
   if (recipes.length >= 1) {
     recipes.forEach((recipe) => {
       const article = createArticle(recipe);
