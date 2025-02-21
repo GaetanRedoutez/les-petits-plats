@@ -1,8 +1,8 @@
 import recipes from './data/recipes.js';
 import { renderRecipes } from './displayRecipes.js';
 
-let searchTags = []; // Liste des tags de la barre de recherche
-let advancedSearchTags = []; // Liste des tags de recherche avancée
+let searchTags = [];
+let advancedSearchTags = [];
 
 /**
  * Crée et affiche un élément de tag.
@@ -74,6 +74,7 @@ export function getFilteredRecipes(searchInputValue = '') {
  * @returns {Array} - Liste des recettes filtrées.
  */
 export function getFilteredRecipesFromTags(searchInputValue = '') {
+  console.log('getFilteredRecipesFromTags');
   let filteredRecipes = recipes.filter((recipe) => {
     const searchTags = searchTags.every(
       (tag) =>
