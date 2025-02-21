@@ -1,12 +1,5 @@
-import {
-  initializeSearch,
-  addTag,
-  addAdvancedTag,
-  getFilteredRecipesFromTags,
-  getFilteredRecipes,
-} from './searchRecipes.js';
 import { renderRecipes } from './displayRecipes.js';
-import { renderOptions } from './filterTags.js';
+import { getFilteredRecipes, initializeSearch } from './searchRecipes.js';
 
 // Query selector
 const inputElement = document.querySelector('#search');
@@ -20,36 +13,8 @@ const tagsContainer = document.querySelector('#tagsContainer');
 
 // Afficher les recettes au chargement de la page
 document.addEventListener('DOMContentLoaded', () => {
-  renderRecipes(getFilteredRecipes());
+  renderRecipes(getFilteredRecipes(inputElement));
 });
 
 // Gestion de la recherche
 initializeSearch(searchForm, inputElement, tagsContainer);
-
-// // Afficher les ingredients dans les filtres avancés
-// renderOptions(
-//   getFilteredRecipes().flatMap((recipe) =>
-//     recipe.ingredients.map((ingredient) => ingredient.ingredient)
-//   )
-// );
-
-// // Mettre à jour les ingrédients lorsqu'il y a une recherche
-// inputElement.addEventListener('input', () => {
-//   renderOptions(
-//     getFilteredRecipes(inputElement.value).flatMap((recipe) =>
-//       recipe.ingredients.map((ingredient) => ingredient.ingredient)
-//     )
-//   );
-// });
-
-// ingredientFilter.addEventListener('click', () => {
-//   ingredientDropdown.classList.toggle('hidden');
-// });
-
-// searchIngredient.addEventListener('input', (event) => {
-//   const searchValue = event.target.value.toLowerCase();
-//   const filteredIngredients = allIngredients.filter((ingredient) =>
-//     ingredient.toLowerCase().includes(searchValue)
-//   );
-//   renderOptions(filteredIngredients);
-// });
