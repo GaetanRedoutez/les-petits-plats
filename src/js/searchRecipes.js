@@ -11,13 +11,12 @@ let advancedSearchTags = [];
  * @param {string} type - Type de tag ('search' ou 'advanced').
  */
 function createTagElement(tagText, container, type) {
-  const tagElement = document.createElement('span');
-  tagElement.classList.add('tag');
+  const tagElement = document.createElement('div');
 
   const tagTextNode = document.createTextNode(tagText);
   const removeButton = document.createElement('button');
   removeButton.textContent = 'x';
-  removeButton.classList.add('remove-tag');
+  removeButton.classList.add('remove-tag', 'pl-6');
 
   removeButton.addEventListener('click', () => {
     if (type === 'search') {
@@ -33,6 +32,19 @@ function createTagElement(tagText, container, type) {
 
   tagElement.appendChild(tagTextNode);
   tagElement.appendChild(removeButton);
+
+  tagElement.classList.add(
+    'tag',
+    'mx-2',
+    'px-4',
+    'h-[53px]',
+    'rounded-lg',
+    'flex',
+    'flex-row',
+    'justify-between',
+    'items-center',
+    'bg-amber-300'
+  );
   container.appendChild(tagElement);
 }
 
@@ -44,6 +56,18 @@ function createTagElement(tagText, container, type) {
 export function addTag(tagText, tagsContainer) {
   searchTags.push(tagText.toLowerCase());
   createTagElement(tagText, tagsContainer, 'search');
+}
+
+/**
+ * Ajoute un tag avancé à la liste des filtres avancés.
+ * @param {string} tagText - Texte du tag avancé.
+ * @param {HTMLElement} tagsContainer - Conteneur des tags avancés.
+ */
+export function addAdvancedTag(tagText, tagsContainer) {
+  if (advancedSearchTags.includes(tagText.toLowerCase())) return;
+
+  advancedSearchTags.push(tagText.toLowerCase());
+  createTagElement(tagText, tagsContainer, 'advanced');
 }
 
 /**
@@ -74,9 +98,8 @@ export function getFilteredRecipes(searchInputValue = '') {
  * @returns {Array} - Liste des recettes filtrées.
  */
 export function getFilteredRecipesFromTags(searchInputValue = '') {
-  console.log('getFilteredRecipesFromTags');
   let filteredRecipes = recipes.filter((recipe) => {
-    const searchTags = searchTags.every(
+    const matchesSearchTags = searchTags.every(
       (tag) =>
         recipe.name.toLowerCase().includes(tag) ||
         recipe.description.toLowerCase().includes(tag) ||
@@ -85,7 +108,15 @@ export function getFilteredRecipesFromTags(searchInputValue = '') {
         )
     );
 
-    return searchTags && matchesAdvancedTags;
+    const matchesAdvancedTags = advancedSearchTags.every(
+      (tag) =>
+        recipe.ingredients.some((ing) =>
+          ing.ingredient.toLowerCase().includes(tag)
+        ) ||
+        (recipe.category && recipe.category.toLowerCase().includes(tag))
+    );
+
+    return matchesSearchTags && matchesAdvancedTags;
   });
 
   // Filtre si un texte est saisi
@@ -128,5 +159,13 @@ export function initializeSearch(searchForm, searchInput, tagsContainer) {
 
   searchInput.addEventListener('input', () => {
     renderRecipes(getFilteredRecipesFromTags(searchInput.value));
+  });
+
+  document.querySelectorAll('.advanced-search-option').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const tagText = btn.getAttribute('data-tag');
+      addAdvancedTag(tagText, advancedTagsContainer);
+      renderRecipes(getFilteredRecipesFromTags());
+    });
   });
 }

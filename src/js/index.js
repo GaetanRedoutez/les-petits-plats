@@ -1,5 +1,12 @@
+import {
+  initializeSearch,
+  addTag,
+  addAdvancedTag,
+  getFilteredRecipesFromTags,
+  getFilteredRecipes,
+} from './searchRecipes.js';
 import { renderRecipes } from './displayRecipes.js';
-import { getFilteredRecipes, initializeSearch } from './searchRecipes.js';
+import { renderOptions } from './filterTags.js';
 
 // Query selector
 const inputElement = document.querySelector('#search');
@@ -16,5 +23,5 @@ document.addEventListener('DOMContentLoaded', () => {
   renderRecipes(getFilteredRecipes());
 });
 
-// Gestion de la recherche
+// Initialisation de la recherche
 initializeSearch(searchForm, inputElement, tagsContainer);
