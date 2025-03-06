@@ -1,12 +1,5 @@
-import {
-  initializeSearch,
-  addTag,
-  addAdvancedTag,
-  getFilteredRecipesFromTags,
-  getFilteredRecipes,
-} from './searchRecipes.js';
 import { renderRecipes } from './displayRecipes.js';
-import { renderOptions } from './filterTags.js';
+import { getFilteredRecipes, initializeSearch } from './searchRecipes.js';
 
 // Query selector
 const inputElement = document.querySelector('#search');
@@ -25,3 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Initialisation de la recherche
 initializeSearch(searchForm, inputElement, tagsContainer);
+
+ingredientFilter.addEventListener('click', () => {
+  ingredientDropdown.classList.toggle('hidden');
+});

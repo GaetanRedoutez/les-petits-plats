@@ -157,6 +157,8 @@ const createArticle = (recipe) => {
  */
 export const renderRecipes = (recipes, inputValue) => {
   const container = document.querySelector('#recipes');
+  const recipeCount = document.querySelector('#recipe-count');
+
   const infoText = document.createElement('p');
   container.innerHTML = '';
 
@@ -165,8 +167,10 @@ export const renderRecipes = (recipes, inputValue) => {
       const article = createArticle(recipe);
       container.appendChild(article);
     });
+    recipeCount.textContent = recipes.length;
   } else {
     infoText.textContent = `Aucune recette ne contient ${inputValue} vous pouvez chercher « tarte aux pommes », « poisson », etc.`;
     container.appendChild(infoText);
+    recipeCount.textContent = recipes.length;
   }
 };
