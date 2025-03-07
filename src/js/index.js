@@ -1,5 +1,11 @@
+import { renderOptions } from './advancedTags.js';
 import { renderRecipes } from './displayRecipes.js';
-import { getFilteredRecipes, initializeSearch } from './searchRecipes.js';
+import {
+  getFilteredRecipes,
+  getFilteredRecipesFromTags,
+  getIngredients,
+  initializeSearch,
+} from './searchRecipes.js';
 
 // Query selector
 const inputElement = document.querySelector('#search');
@@ -19,6 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // Initialisation de la recherche
 initializeSearch(searchForm, inputElement, tagsContainer);
 
+// Fonction pour afficher ou masquer le dropdown des ingrédients
 ingredientFilter.addEventListener('click', () => {
+  const filteredRecipes = getFilteredRecipesFromTags();
+  const ingredient = getIngredients(filteredRecipes);
+  renderOptions(ingredient);
+  console.log(ingredient);
   ingredientDropdown.classList.toggle('hidden');
 });

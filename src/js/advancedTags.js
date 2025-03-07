@@ -1,5 +1,4 @@
 export const renderOptions = (ingredients) => {
-  console.log(ingredients);
   while (selectIngredient.firstChild) {
     selectIngredient.removeChild(selectIngredient.firstChild);
   }

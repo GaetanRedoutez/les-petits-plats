@@ -1,5 +1,6 @@
 import recipes from './data/recipes.js';
 import { renderRecipes } from './displayRecipes.js';
+import { renderOptions } from './advancedTags.js';
 
 let searchTags = [];
 let advancedSearchTags = [];
@@ -142,8 +143,15 @@ export function getFilteredRecipesFromTags(searchInputValue = '') {
  * @param {HTMLElement} tagsContainer - Conteneur des tags de recherche.
  */
 export function initializeSearch(searchForm, searchInput, tagsContainer) {
+  const ingredientFilter = document.querySelector('#searchIngredientBtn');
+  let filteredRecipes = getFilteredRecipesFromTags();
+  let ingredient = getIngredients(recipes);
+
   searchForm.addEventListener('submit', (e) => {
     e.preventDefault();
+    ingredient = getIngredients(filteredRecipes);
+    renderOptions(ingredient);
+    console.log(ingredient);
     const searchValue = searchInput.value.trim();
 
     if (
@@ -158,14 +166,26 @@ export function initializeSearch(searchForm, searchInput, tagsContainer) {
   });
 
   searchInput.addEventListener('input', () => {
-    renderRecipes(getFilteredRecipesFromTags(searchInput.value));
-  });
+    filteredRecipes = getFilteredRecipesFromTags(searchInput.value);
+    ingredient = getIngredients(filteredRecipes);
+    renderOptions(ingredient);
+    console.log(ingredient);
 
-  document.querySelectorAll('.advanced-search-option').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const tagText = btn.getAttribute('data-tag');
-      addAdvancedTag(tagText, advancedTagsContainer);
-      renderRecipes(getFilteredRecipesFromTags());
-    });
+    renderRecipes(getFilteredRecipesFromTags(searchInput.value));
+    renderOptions(ingredient);
   });
 }
+
+// Récupérer tous les ingrédients des recettes
+export const getIngredients = (recipes) => {
+  const ingredientsSet = new Set();
+  console.log('ingredientsSet', ingredientsSet);
+
+  recipes.forEach((recipe) => {
+    recipe.ingredients.forEach((ing) => {
+      ingredientsSet.add(ing.ingredient);
+    });
+  });
+
+  return Array.from(ingredientsSet).sort();
+};

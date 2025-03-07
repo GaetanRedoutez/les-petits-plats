@@ -9,6 +9,7 @@
       href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="./index.css" />
 
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script type="module" src="./js/index.js" defer></script>
@@ -72,15 +73,24 @@
               </label>
             </button>
 
-            <div id="ingredientDropdown" class="hidden">
-              <input type="text" id="searchIngredient" />
+            <div class="absolute top-11 w-48">
+              <div
+                id="ingredientDropdown"
+                class="hidden bg-white relative z-10"
+              >
+                <input
+                  type="text"
+                  id="searchIngredient"
+                  class="focus:outline-none py-1 pl-1"
+                />
 
-              <select
-                id="selectIngredient"
-                multiple
-                size="5"
-                class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              ></select>
+                <select
+                  id="selectIngredient"
+                  multiple
+                  size="5"
+                  class="w-full p-2 border border-none bg-white rounded-md outline-none"
+                ></select>
+              </div>
             </div>
           </div>
         </div>
