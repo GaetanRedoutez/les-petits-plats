@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Initialisation de la recherche
-initializeSearch(searchForm, inputElement, tagsContainer);
+initializeSearch(searchForm, inputElement, tagsContainer, selectIngredient);
 
 // Fonction pour afficher ou masquer le dropdown des ingrédients
 ingredientFilter.addEventListener('click', () => {

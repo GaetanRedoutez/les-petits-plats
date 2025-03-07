@@ -109,12 +109,10 @@ export function getFilteredRecipesFromTags(searchInputValue = '') {
         )
     );
 
-    const matchesAdvancedTags = advancedSearchTags.every(
-      (tag) =>
-        recipe.ingredients.some((ing) =>
-          ing.ingredient.toLowerCase().includes(tag)
-        ) ||
-        (recipe.category && recipe.category.toLowerCase().includes(tag))
+    const matchesAdvancedTags = advancedSearchTags.every((tag) =>
+      recipe.ingredients.some((ing) =>
+        ing.ingredient.toLowerCase().includes(tag)
+      )
     );
 
     return matchesSearchTags && matchesAdvancedTags;
@@ -142,16 +140,17 @@ export function getFilteredRecipesFromTags(searchInputValue = '') {
  * @param {HTMLInputElement} searchInput - Le champ de recherche.
  * @param {HTMLElement} tagsContainer - Conteneur des tags de recherche.
  */
-export function initializeSearch(searchForm, searchInput, tagsContainer) {
-  const ingredientFilter = document.querySelector('#searchIngredientBtn');
+export function initializeSearch(
+  searchForm,
+  searchInput,
+  tagsContainer,
+  selectIngredient
+) {
   let filteredRecipes = getFilteredRecipesFromTags();
   let ingredient = getIngredients(recipes);
 
   searchForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    ingredient = getIngredients(filteredRecipes);
-    renderOptions(ingredient);
-    console.log(ingredient);
     const searchValue = searchInput.value.trim();
 
     if (
@@ -162,24 +161,31 @@ export function initializeSearch(searchForm, searchInput, tagsContainer) {
 
     addTag(searchValue, tagsContainer);
     searchInput.value = '';
+    ingredient = getIngredients(filteredRecipes);
     renderRecipes(getFilteredRecipesFromTags());
+    renderOptions(ingredient);
   });
 
   searchInput.addEventListener('input', () => {
     filteredRecipes = getFilteredRecipesFromTags(searchInput.value);
     ingredient = getIngredients(filteredRecipes);
-    renderOptions(ingredient);
-    console.log(ingredient);
-
     renderRecipes(getFilteredRecipesFromTags(searchInput.value));
     renderOptions(ingredient);
+  });
+
+  selectIngredient.addEventListener('change', (e) => {
+    addAdvancedTag(e.target.value, tagsContainer);
+    selectIngredient.value = '';
+    ingredient = getIngredients(filteredRecipes);
+    renderRecipes(getFilteredRecipesFromTags());
+    renderOptions(ingredient);
+    document.querySelector('#ingredientDropdown').classList.toggle('hidden');
   });
 }
 
 // Récupérer tous les ingrédients des recettes
 export const getIngredients = (recipes) => {
   const ingredientsSet = new Set();
-  console.log('ingredientsSet', ingredientsSet);
 
   recipes.forEach((recipe) => {
     recipe.ingredients.forEach((ing) => {
