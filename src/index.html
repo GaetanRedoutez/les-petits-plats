@@ -143,6 +143,43 @@
               </div>
             </div>
           </div>
+          <div class="w-48 relative bg-white rounded-xl">
+            <button id="searchUstensileBtn" class="w-full">
+              <label
+                for="searchUstensile"
+                class="text-sm p-4 font-medium cursor-pointer flex flex-row justify-between"
+              >
+                <p>Ustensiles</p>
+                <img src="../public/images/assets/arrow.svg" alt="arrow" />
+              </label>
+            </button>
+
+            <div class="absolute top-11 w-48">
+              <div id="ustensileDropdown" class="hidden bg-white relative z-10">
+                <div
+                  class="mx-2 mb-2 border rounded-lg border-gray-200 flex items-center p-2 relative"
+                >
+                  <input
+                    type="text"
+                    id="searchUstensile"
+                    class="focus:outline-none py-1 pr-8 text-sm flex-grow overflow-hidden"
+                    placeholder="Rechercher..."
+                  />
+                  <i
+                    class="fa-solid fa-magnifying-glass text-gray-400 absolute right-2"
+                  ></i>
+                </div>
+                <div id="ustensileDropdownTags"></div>
+
+                <select
+                  id="selectUstensile"
+                  multiple
+                  size="5"
+                  class="w-full p-4 border border-none bg-white rounded-md outline-none"
+                ></select>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="self-center"><span id="recipe-count"></span> recettes</div>
       </div>

@@ -4,9 +4,11 @@ import {
   getFilteredRecipes,
   getFilteredRecipesFromTags,
   getIngredients,
+  getUstensiles,
   initializeSearch,
   renderAppareils,
   renderIngredients,
+  renderUstensiles,
 } from './searchRecipes.js';
 
 // Query selector
@@ -26,6 +28,11 @@ const appareilDropdown = document.querySelector('#appareilDropdown');
 const searchAppareil = document.querySelector('#searchAppareil');
 const appareilDropdownTags = document.querySelector('#appareilDropdownTags');
 
+const ustensileFilter = document.querySelector('#searchUstensileBtn');
+const ustensileDropdown = document.querySelector('#ustensileDropdown');
+const searchUstensile = document.querySelector('#searchUstensile');
+const ustensileDropdownTags = document.querySelector('#appareilDropdownTags');
+
 // Afficher les recettes au chargement de la page
 document.addEventListener('DOMContentLoaded', () => {
   renderRecipes(getFilteredRecipes());
@@ -39,7 +46,9 @@ initializeSearch(
   ingredientDropdownTags,
   searchIngredient,
   searchAppareil,
-  appareilDropdownTags
+  appareilDropdownTags,
+  searchUstensile,
+  ustensileDropdownTags
 );
 
 // Fonction pour afficher ou masquer le dropdown des ingrédients
@@ -54,7 +63,15 @@ ingredientFilter.addEventListener('click', () => {
 appareilFilter.addEventListener('click', () => {
   const filteredRecipes = getFilteredRecipesFromTags();
   const appareils = getAppareils(filteredRecipes);
-  console.log(appareils);
   renderAppareils(appareils);
   appareilDropdown.classList.toggle('hidden');
+});
+
+// Fonction pour afficher ou masquer le dropdown des ustensiles
+ustensileFilter.addEventListener('click', () => {
+  const filteredRecipes = getFilteredRecipesFromTags();
+  const ustensiles = getUstensiles(filteredRecipes);
+  console.log(ustensiles);
+  renderUstensiles(ustensiles);
+  ustensileDropdown.classList.toggle('hidden');
 });
