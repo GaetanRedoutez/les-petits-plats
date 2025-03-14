@@ -1,10 +1,10 @@
-import { renderOptions } from './advancedTags.js';
 import { renderRecipes } from './displayRecipes.js';
 import {
   getFilteredRecipes,
   getFilteredRecipesFromTags,
   getIngredients,
   initializeSearch,
+  renderOptions,
 } from './searchRecipes.js';
 
 // Query selector
@@ -16,6 +16,9 @@ const ingredientDropdown = document.querySelector('#ingredientDropdown');
 const selectIngredient = document.querySelector('#selectIngredient');
 const searchIngredient = document.querySelector('#searchIngredient');
 const tagsContainer = document.querySelector('#tagsContainer');
+const ingredientDropdownTags = document.querySelector(
+  '#ingredientDropdownTags'
+);
 
 // Afficher les recettes au chargement de la page
 document.addEventListener('DOMContentLoaded', () => {
@@ -23,7 +26,14 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Initialisation de la recherche
-initializeSearch(searchForm, inputElement, tagsContainer, selectIngredient);
+initializeSearch(
+  searchForm,
+  inputElement,
+  tagsContainer,
+  ingredientDropdownTags,
+  selectIngredient,
+  searchIngredient
+);
 
 // Fonction pour afficher ou masquer le dropdown des ingrédients
 ingredientFilter.addEventListener('click', () => {

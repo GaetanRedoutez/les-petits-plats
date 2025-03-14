@@ -1,88 +1,34 @@
 import recipes from './data/recipes.js';
 import { renderRecipes } from './displayRecipes.js';
-import { renderOptions } from './advancedTags.js';
+
+// ********************************* Variables ********************************* \\
 
 let searchTags = [];
 let advancedSearchTags = [];
 
-/**
- * Crée et affiche un élément de tag.
- * @param {string} tagText - Texte du tag.
- * @param {HTMLElement} container - Conteneur des tags.
- * @param {string} type - Type de tag ('search' ou 'advanced').
- */
-function createTagElement(tagText, container, type) {
-  const tagElement = document.createElement('div');
+// ********************************* Display les options de dropdown ********************************* \\
 
-  const tagTextNode = document.createTextNode(tagText);
-  const removeButton = document.createElement('button');
-  removeButton.textContent = 'x';
-  removeButton.classList.add('remove-tag', 'pl-6');
-
-  removeButton.addEventListener('click', () => {
-    if (type === 'search') {
-      searchTags = searchTags.filter((tag) => tag !== tagText.toLowerCase());
-    } else {
-      advancedSearchTags = advancedSearchTags.filter(
-        (tag) => tag !== tagText.toLowerCase()
-      );
-    }
-    tagElement.remove();
-    renderRecipes(getFilteredRecipesFromTags());
-  });
-
-  tagElement.appendChild(tagTextNode);
-  tagElement.appendChild(removeButton);
-
-  tagElement.classList.add(
-    'tag',
-    'mx-2',
-    'px-4',
-    'h-[53px]',
-    'rounded-lg',
-    'flex',
-    'flex-row',
-    'justify-between',
-    'items-center',
-    'bg-amber-300'
+export const renderOptions = (ingredients) => {
+  selectIngredient.innerHTML = '';
+  const filteredIngredients = ingredients.filter(
+    (ingredient) => !advancedSearchTags.includes(ingredient.toLowerCase())
   );
-  container.appendChild(tagElement);
-}
+  filteredIngredients.forEach((ingredient) => {
+    const option = document.createElement('option');
+    option.value = ingredient;
+    option.textContent = ingredient;
+    selectIngredient.appendChild(option);
+  });
+};
 
-/**
- * Ajoute un tag à la liste des filtres actifs (barre de recherche).
- * @param {string} tagText - Texte du tag.
- * @param {HTMLElement} tagsContainer - Conteneur des tags.
- */
-export function addTag(tagText, tagsContainer) {
-  searchTags.push(tagText.toLowerCase());
-  createTagElement(tagText, tagsContainer, 'search');
-}
+// ********************************* Filtrage ********************************* \\
 
-/**
- * Ajoute un tag avancé à la liste des filtres avancés.
- * @param {string} tagText - Texte du tag avancé.
- * @param {HTMLElement} tagsContainer - Conteneur des tags avancés.
- */
-export function addAdvancedTag(tagText, tagsContainer) {
-  if (advancedSearchTags.includes(tagText.toLowerCase())) return;
-
-  advancedSearchTags.push(tagText.toLowerCase());
-  createTagElement(tagText, tagsContainer, 'advanced');
-}
-
-/**
- * Filtre les recettes en fonction de la saisie utilisateur uniquement.
- * @param {string} searchInputValue - Texte de recherche.
- * @returns {Array} - Liste des recettes filtrées.
- */
-export function getFilteredRecipes(searchInputValue = '') {
+export const getFilteredRecipes = (searchInputValue = '') => {
   if (searchInputValue.length < 3) {
     return recipes;
   }
 
   const searchLower = searchInputValue.toLowerCase().trim();
-
   return recipes.filter(
     (recipe) =>
       recipe.name.toLowerCase().includes(searchLower) ||
@@ -91,14 +37,9 @@ export function getFilteredRecipes(searchInputValue = '') {
         ing.ingredient.toLowerCase().includes(searchLower)
       )
   );
-}
+};
 
-/**
- * Filtre les recettes
- * @param {string} searchInputValue - Texte de la barre de recherche.
- * @returns {Array} - Liste des recettes filtrées.
- */
-export function getFilteredRecipesFromTags(searchInputValue = '') {
+export const getFilteredRecipesFromTags = (searchInputValue = '') => {
   let filteredRecipes = recipes.filter((recipe) => {
     const matchesSearchTags = searchTags.every(
       (tag) =>
@@ -132,27 +73,28 @@ export function getFilteredRecipesFromTags(searchInputValue = '') {
   }
 
   return filteredRecipes;
-}
+};
 
-/**
- * Initialise la gestion des recherches et des tags.
- * @param {HTMLFormElement} searchForm - Le formulaire de recherche.
- * @param {HTMLInputElement} searchInput - Le champ de recherche.
- * @param {HTMLElement} tagsContainer - Conteneur des tags de recherche.
- */
-export function initializeSearch(
+// ********************************* Fonction principale ********************************* \\
+
+export const initializeSearch = (
   searchForm,
   searchInput,
   tagsContainer,
+  ingredientDropdownTags,
   selectIngredient
-) {
+) => {
   let filteredRecipes = getFilteredRecipesFromTags();
-  let ingredient = getIngredients(recipes);
+  let ingredient = getIngredients(filteredRecipes);
+
+  const updateDatas = () => {
+    renderRecipes(getFilteredRecipesFromTags());
+    renderOptions(getIngredients(getFilteredRecipesFromTags()));
+  };
 
   searchForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const searchValue = searchInput.value.trim();
-
     if (
       searchValue.length < 3 ||
       searchTags.includes(searchValue.toLowerCase())
@@ -162,36 +104,133 @@ export function initializeSearch(
     addTag(searchValue, tagsContainer);
     searchInput.value = '';
     ingredient = getIngredients(filteredRecipes);
-    renderRecipes(getFilteredRecipesFromTags());
-    renderOptions(ingredient);
+    updateDatas();
   });
 
   searchInput.addEventListener('input', () => {
     filteredRecipes = getFilteredRecipesFromTags(searchInput.value);
     ingredient = getIngredients(filteredRecipes);
-    renderRecipes(getFilteredRecipesFromTags(searchInput.value));
-    renderOptions(ingredient);
+    updateDatas();
   });
 
   selectIngredient.addEventListener('change', (e) => {
-    addAdvancedTag(e.target.value, tagsContainer);
-    selectIngredient.value = '';
+    const selectedValue = e.target.value;
+
+    if (selectedValue === '' || advancedSearchTags.includes(selectedValue)) {
+      return;
+    }
+
+    addDropdownTag(selectedValue, ingredientDropdownTags);
+
     ingredient = getIngredients(filteredRecipes);
-    renderRecipes(getFilteredRecipesFromTags());
-    renderOptions(ingredient);
+    updateDatas();
+
     document.querySelector('#ingredientDropdown').classList.toggle('hidden');
   });
-}
+};
 
 // Récupérer tous les ingrédients des recettes
 export const getIngredients = (recipes) => {
   const ingredientsSet = new Set();
-
   recipes.forEach((recipe) => {
     recipe.ingredients.forEach((ing) => {
       ingredientsSet.add(ing.ingredient);
     });
   });
-
   return Array.from(ingredientsSet).sort();
+};
+
+// ********************************* TAGS ********************************* \\
+
+const createTagElement = (tagText, container, type) => {
+  const tagElement = document.createElement('div');
+  const tagTextNode = document.createTextNode(tagText);
+  const removeButton = document.createElement('button');
+  removeButton.textContent = 'x';
+  removeButton.classList.add('remove-tag', 'pl-6');
+
+  removeButton.addEventListener('click', () => {
+    if (type === 'search') {
+      searchTags = searchTags.filter((tag) => tag !== tagText.toLowerCase());
+    } else {
+      advancedSearchTags = advancedSearchTags.filter(
+        (tag) => tag !== tagText.toLowerCase()
+      );
+    }
+    tagElement.remove();
+    renderRecipes(getFilteredRecipesFromTags());
+  });
+
+  tagElement.appendChild(tagTextNode);
+  tagElement.appendChild(removeButton);
+  tagElement.classList.add(
+    'tag',
+    'mx-2',
+    'px-4',
+    'h-[53px]',
+    'rounded-lg',
+    'flex',
+    'flex-row',
+    'justify-between',
+    'items-center',
+    'bg-amber-300'
+  );
+  container.appendChild(tagElement);
+};
+
+export const addTag = (tagText, tagsContainer) => {
+  searchTags.push(tagText.toLowerCase());
+  createTagElement(tagText, tagsContainer, 'search');
+};
+
+const addDropdownTag = (tagText, container, tagsContainer) => {
+  if (advancedSearchTags.includes(tagText.toLowerCase())) return;
+
+  advancedSearchTags.push(tagText.toLowerCase());
+
+  const tagElement = document.createElement('div');
+  tagElement.classList.add(
+    'tag',
+    'w-full',
+    'px-4',
+    'h-[37px]',
+    'flex',
+    'justify-between',
+    'items-center',
+    'bg-amber-300',
+    'text-sm',
+    'group'
+  );
+
+  const tagTextNode = document.createTextNode(tagText);
+  const removeButton = document.createElement('button');
+  removeButton.textContent = 'x';
+  removeButton.classList.add(
+    'remove-tag',
+    'ml-2',
+    'hidden',
+    'cursor-pointer',
+    'group-hover:block' // Affiche la croix au survol
+  );
+
+  removeButton.addEventListener('click', () => {
+    advancedSearchTags = advancedSearchTags.filter(
+      (tag) => tag !== tagText.toLowerCase()
+    );
+    tagElement.remove();
+    renderOptions(getIngredients(getFilteredRecipesFromTags()));
+    renderRecipes(getFilteredRecipesFromTags());
+  });
+
+  const tagTextElement = document.createElement('span');
+  tagTextElement.textContent = tagText;
+  tagTextElement.classList.add(
+    'group-hover:font-bold',
+    'truncate',
+    'whitespace-nowrap'
+  );
+
+  tagElement.appendChild(tagTextElement);
+  tagElement.appendChild(removeButton);
+  container.appendChild(tagElement);
 };
