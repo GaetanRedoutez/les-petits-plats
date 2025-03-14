@@ -6,9 +6,23 @@ import { renderRecipes } from './displayRecipes.js';
 let searchTags = [];
 let advancedSearchTags = [];
 
+const selectIngredient = document.querySelector('#selectIngredient');
+
+const selectAppareil = document.querySelector('#selectAppareil');
+
 // ********************************* Display les options de dropdown ********************************* \\
 
-export const renderOptions = (ingredients) => {
+export const getIngredients = (recipes) => {
+  const ingredientsSet = new Set();
+  recipes.forEach((recipe) => {
+    recipe.ingredients.forEach((ing) => {
+      ingredientsSet.add(ing.ingredient);
+    });
+  });
+  return Array.from(ingredientsSet).sort();
+};
+
+export const renderIngredients = (ingredients) => {
   selectIngredient.innerHTML = '';
   const filteredIngredients = ingredients.filter(
     (ingredient) => !advancedSearchTags.includes(ingredient.toLowerCase())
@@ -20,6 +34,30 @@ export const renderOptions = (ingredients) => {
     option.textContent = ingredient;
     option.classList.add('text-sm', 'truncate');
     selectIngredient.appendChild(option);
+  });
+};
+
+export const getAppareils = (recipes) => {
+  const appareilsSet = new Set();
+  recipes.forEach((recipe) => {
+    appareilsSet.add(recipe.appliance);
+  });
+  return Array.from(appareilsSet).sort();
+};
+
+export const renderAppareils = (appareils) => {
+  selectAppareil.innerHTML = '';
+  const filteredAppareils = appareils.filter(
+    (appareil) => !advancedSearchTags.includes(appareil.toLowerCase())
+  );
+
+  console.log(filteredAppareils, appareils);
+  filteredAppareils.forEach((appareil) => {
+    const option = document.createElement('option');
+    option.value = appareil;
+    option.textContent = appareil;
+    option.classList.add('text-sm', 'truncate');
+    selectAppareil.appendChild(option);
   });
 };
 
@@ -52,10 +90,11 @@ export const getFilteredRecipesFromTags = (searchInputValue = '') => {
         )
     );
 
-    const matchesAdvancedTags = advancedSearchTags.every((tag) =>
-      recipe.ingredients.some((ing) =>
-        ing.ingredient.toLowerCase().includes(tag)
-      )
+    const matchesAdvancedTags = advancedSearchTags.every(
+      (tag) =>
+        recipe.ingredients.some((ing) =>
+          ing.ingredient.toLowerCase().includes(tag)
+        ) || recipe.appliance.toLowerCase().includes(tag)
     );
 
     return matchesSearchTags && matchesAdvancedTags;
@@ -78,21 +117,23 @@ export const getFilteredRecipesFromTags = (searchInputValue = '') => {
 };
 
 // ********************************* Fonction principale ********************************* \\
-
 export const initializeSearch = (
   searchForm,
   searchInput,
   tagsContainer,
   ingredientDropdownTags,
-  selectIngredient,
-  searchIngredient
+  searchIngredient,
+  searchAppareil,
+  appareilDropdownTags
 ) => {
   let filteredRecipes = getFilteredRecipesFromTags();
   let ingredient = getIngredients(filteredRecipes);
+  let appareil = getAppareils(filteredRecipes);
 
   const updateDatas = () => {
     renderRecipes(getFilteredRecipesFromTags());
-    renderOptions(getIngredients(getFilteredRecipesFromTags()));
+    renderIngredients(getIngredients(getFilteredRecipesFromTags()));
+    renderAppareils(getAppareils(getFilteredRecipesFromTags()));
   };
 
   searchForm.addEventListener('submit', (e) => {
@@ -107,12 +148,14 @@ export const initializeSearch = (
     addTag(searchValue, tagsContainer);
     searchInput.value = '';
     ingredient = getIngredients(filteredRecipes);
+    appareil = getAppareils(filteredRecipes);
     updateDatas();
   });
 
   searchInput.addEventListener('input', () => {
     filteredRecipes = getFilteredRecipesFromTags(searchInput.value);
     ingredient = getIngredients(filteredRecipes);
+    appareil = getAppareils(filteredRecipes);
     updateDatas();
   });
 
@@ -123,7 +166,7 @@ export const initializeSearch = (
       ingredient.toLowerCase().includes(searchValue)
     );
 
-    renderOptions(filteredIngredients);
+    renderIngredients(filteredIngredients);
   });
 
   selectIngredient.addEventListener('change', (e) => {
@@ -138,17 +181,29 @@ export const initializeSearch = (
     updateDatas();
     document.querySelector('#ingredientDropdown').classList.toggle('hidden');
   });
-};
 
-// Récupérer tous les ingrédients des recettes
-export const getIngredients = (recipes) => {
-  const ingredientsSet = new Set();
-  recipes.forEach((recipe) => {
-    recipe.ingredients.forEach((ing) => {
-      ingredientsSet.add(ing.ingredient);
-    });
+  searchAppareil.addEventListener('input', (e) => {
+    const searchValue = e.target.value.toLowerCase().trim();
+
+    const filteredAppareils = appareil.filter((appareil) =>
+      appareil.toLowerCase().includes(searchValue)
+    );
+
+    renderAppareils(filteredAppareils);
   });
-  return Array.from(ingredientsSet).sort();
+
+  selectAppareil.addEventListener('change', (e) => {
+    const selectedValue = e.target.value.trim();
+
+    if (selectedValue === '') return;
+
+    addDropdownTag(selectedValue, appareilDropdownTags);
+
+    selectAppareil.value = '';
+    appareil = getAppareils(filteredRecipes);
+    updateDatas();
+    document.querySelector('#appareilDropdown').classList.toggle('hidden');
+  });
 };
 
 // ********************************* TAGS ********************************* \\
@@ -213,7 +268,6 @@ const addDropdownTag = (tagText, container, tagsContainer) => {
     'group'
   );
 
-  const tagTextNode = document.createTextNode(tagText);
   const removeButton = document.createElement('button');
   removeButton.textContent = 'x';
   removeButton.classList.add(
@@ -221,7 +275,7 @@ const addDropdownTag = (tagText, container, tagsContainer) => {
     'ml-2',
     'hidden',
     'cursor-pointer',
-    'group-hover:block' // Affiche la croix au survol
+    'group-hover:block'
   );
 
   removeButton.addEventListener('click', () => {
@@ -229,7 +283,7 @@ const addDropdownTag = (tagText, container, tagsContainer) => {
       (tag) => tag !== tagText.toLowerCase()
     );
     tagElement.remove();
-    renderOptions(getIngredients(getFilteredRecipesFromTags()));
+    renderIngredients(getIngredients(getFilteredRecipesFromTags()));
     renderRecipes(getFilteredRecipesFromTags());
   });
 

@@ -65,7 +65,7 @@
 
     <main class="flex flex-col flex-grow min-h-screen bg-gray-200 pb-52">
       <div class="flex flex-row justify-between mt-5 mx-24">
-        <div class="font-[Manrope]">
+        <div class="font-[Manrope] flex flex-row gap-16">
           <div class="w-48 relative bg-white rounded-xl">
             <button id="searchIngredientBtn" class="w-full">
               <label
@@ -99,6 +99,43 @@
 
                 <select
                   id="selectIngredient"
+                  multiple
+                  size="5"
+                  class="w-full p-4 border border-none bg-white rounded-md outline-none"
+                ></select>
+              </div>
+            </div>
+          </div>
+          <div class="w-48 relative bg-white rounded-xl">
+            <button id="searchAppareilBtn" class="w-full">
+              <label
+                for="searchAppareil"
+                class="text-sm p-4 font-medium cursor-pointer flex flex-row justify-between"
+              >
+                <p>Appareils</p>
+                <img src="../public/images/assets/arrow.svg" alt="arrow" />
+              </label>
+            </button>
+
+            <div class="absolute top-11 w-48">
+              <div id="appareilDropdown" class="hidden bg-white relative z-10">
+                <div
+                  class="mx-2 mb-2 border rounded-lg border-gray-200 flex items-center p-2 relative"
+                >
+                  <input
+                    type="text"
+                    id="searchAppareil"
+                    class="focus:outline-none py-1 pr-8 text-sm flex-grow overflow-hidden"
+                    placeholder="Rechercher..."
+                  />
+                  <i
+                    class="fa-solid fa-magnifying-glass text-gray-400 absolute right-2"
+                  ></i>
+                </div>
+                <div id="appareilDropdownTags"></div>
+
+                <select
+                  id="selectAppareil"
                   multiple
                   size="5"
                   class="w-full p-4 border border-none bg-white rounded-md outline-none"
