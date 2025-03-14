@@ -13,10 +13,12 @@ export const renderOptions = (ingredients) => {
   const filteredIngredients = ingredients.filter(
     (ingredient) => !advancedSearchTags.includes(ingredient.toLowerCase())
   );
+
   filteredIngredients.forEach((ingredient) => {
     const option = document.createElement('option');
     option.value = ingredient;
     option.textContent = ingredient;
+    option.classList.add('text-sm', 'truncate');
     selectIngredient.appendChild(option);
   });
 };
@@ -82,7 +84,8 @@ export const initializeSearch = (
   searchInput,
   tagsContainer,
   ingredientDropdownTags,
-  selectIngredient
+  selectIngredient,
+  searchIngredient
 ) => {
   let filteredRecipes = getFilteredRecipesFromTags();
   let ingredient = getIngredients(filteredRecipes);
@@ -113,18 +116,26 @@ export const initializeSearch = (
     updateDatas();
   });
 
-  selectIngredient.addEventListener('change', (e) => {
-    const selectedValue = e.target.value;
+  searchIngredient.addEventListener('input', (e) => {
+    const searchValue = e.target.value.toLowerCase().trim();
 
-    if (selectedValue === '' || advancedSearchTags.includes(selectedValue)) {
-      return;
-    }
+    const filteredIngredients = ingredient.filter((ingredient) =>
+      ingredient.toLowerCase().includes(searchValue)
+    );
+
+    renderOptions(filteredIngredients);
+  });
+
+  selectIngredient.addEventListener('change', (e) => {
+    const selectedValue = e.target.value.trim();
+
+    if (selectedValue === '') return;
 
     addDropdownTag(selectedValue, ingredientDropdownTags);
 
+    selectIngredient.value = '';
     ingredient = getIngredients(filteredRecipes);
     updateDatas();
-
     document.querySelector('#ingredientDropdown').classList.toggle('hidden');
   });
 };

@@ -40,6 +40,5 @@ ingredientFilter.addEventListener('click', () => {
   const filteredRecipes = getFilteredRecipesFromTags();
   const ingredient = getIngredients(filteredRecipes);
   renderOptions(ingredient);
-  console.log(ingredient);
   ingredientDropdown.classList.toggle('hidden');
 });
