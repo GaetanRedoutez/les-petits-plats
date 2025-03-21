@@ -88,11 +88,6 @@ const recipeMatchesAdvancedTags = (recipe, tags) =>
 
 export const getFilteredRecipes = (searchInputValue = '') => {
   const searchLower = searchInputValue.toLowerCase().trim();
-  return recipes.filter((recipe) => recipeMatchesSearch(recipe, searchLower));
-};
-
-export const getFilteredRecipesFromTags = (searchInputValue = '') => {
-  const searchLower = searchInputValue.toLowerCase().trim();
 
   let filteredRecipes = recipes.filter((recipe) => {
     return (
@@ -125,13 +120,13 @@ export const initializeSearch = (
   ustensileDropdownTags,
   ustensileDropdown
 ) => {
-  let filteredRecipes = getFilteredRecipesFromTags();
+  let filteredRecipes = getFilteredRecipes();
   let ingredient = getIngredients(filteredRecipes);
   let appareil = getAppareils(filteredRecipes);
   let ustensile = getUstensiles(filteredRecipes);
 
-  const updateDatas = () => {
-    const filteredRecipes = getFilteredRecipesFromTags();
+  const updateDatas = (searchInputValue = '') => {
+    const filteredRecipes = getFilteredRecipes(searchInputValue);
 
     renderRecipes(filteredRecipes);
     renderIngredients(getIngredients(filteredRecipes));
@@ -156,14 +151,11 @@ export const initializeSearch = (
     updateDatas();
   });
 
-  searchInput.addEventListener('input', () => {
-    if (searchInput.length >= 3) {
-      filteredRecipes = getFilteredRecipes(searchInput.value);
-      ingredient = getIngredients(filteredRecipes);
-      appareil = getAppareils(filteredRecipes);
-      ustensile = getUstensiles(filteredRecipes);
-      updateDatas();
-    }
+  searchInput.addEventListener('input', (e) => {
+    ingredient = getIngredients(filteredRecipes);
+    appareil = getAppareils(filteredRecipes);
+    ustensile = getUstensiles(filteredRecipes);
+    updateDatas(e.target.value);
   });
 
   /******* INGREDIENT *******/
@@ -273,7 +265,7 @@ const createSimpleTag = (tagText, container) => {
   removeButton.addEventListener('click', () => {
     searchTags = searchTags.filter((tag) => tag !== lowerTag);
     tagNode.remove();
-    renderRecipes(getFilteredRecipesFromTags());
+    renderRecipes(getFilteredRecipes());
   });
 
   tagNode.appendChild(textNode);
@@ -299,7 +291,7 @@ const addAdvancedTag = (tagText, container, dropdown, tagsContainer) => {
     tagNode.remove();
     dropdownTagNode.remove();
     isDpTags && dropdown.classList.toggle('hidden');
-    renderRecipes(getFilteredRecipesFromTags());
+    renderRecipes(getFilteredRecipes());
   };
 
   // tagsContainer

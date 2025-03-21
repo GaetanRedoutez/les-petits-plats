@@ -2,7 +2,6 @@ import { renderRecipes } from './displayRecipes.js';
 import {
   getAppareils,
   getFilteredRecipes,
-  getFilteredRecipesFromTags,
   getIngredients,
   getUstensiles,
   initializeSearch,
@@ -56,7 +55,7 @@ initializeSearch(
 
 // Fonction pour afficher ou masquer le dropdown des ingrédients
 ingredientFilter.addEventListener('click', () => {
-  const filteredRecipes = getFilteredRecipesFromTags();
+  const filteredRecipes = getFilteredRecipes();
   const ingredient = getIngredients(filteredRecipes);
   renderIngredients(ingredient);
   ingredientDropdown.classList.toggle('hidden');
@@ -64,7 +63,7 @@ ingredientFilter.addEventListener('click', () => {
 
 // Fonction pour afficher ou masquer le dropdown des appareils
 appareilFilter.addEventListener('click', () => {
-  const filteredRecipes = getFilteredRecipesFromTags();
+  const filteredRecipes = getFilteredRecipes();
   const appareils = getAppareils(filteredRecipes);
   renderAppareils(appareils);
   appareilDropdown.classList.toggle('hidden');
@@ -72,7 +71,7 @@ appareilFilter.addEventListener('click', () => {
 
 // Fonction pour afficher ou masquer le dropdown des ustensiles
 ustensileFilter.addEventListener('click', () => {
-  const filteredRecipes = getFilteredRecipesFromTags();
+  const filteredRecipes = getFilteredRecipes();
   const ustensiles = getUstensiles(filteredRecipes);
   console.log(ustensiles);
   renderUstensiles(ustensiles);
