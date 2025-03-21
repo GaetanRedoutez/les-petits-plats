@@ -1501,7 +1501,7 @@ const recipes = [
     time: 20,
     description:
       "Séparer les blancs d'oeufs. Faire fondre le chocolat au bain marie. Ajouter les jaunes et le sucre au chocolat hors du feu. Battre les blancs en neige. Ajouter les blancs au mélange de chocolat. Mélangez délicatement avec une spatule. Servir dans un plat ou dans des verres. Mettre au frais",
-    appliance: 'Casserole',
+    appliance: '',
     ustensils: ['fouet', 'spatule', 'verres'],
   },
   {

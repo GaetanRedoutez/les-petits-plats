@@ -51,7 +51,6 @@ export const renderAppareils = (appareils) => {
     (appareil) => !advancedSearchTags.includes(appareil.toLowerCase())
   );
 
-  console.log(filteredAppareils, appareils);
   filteredAppareils.forEach((appareil) => {
     const option = document.createElement('option');
     option.value = appareil;
@@ -77,7 +76,6 @@ export const renderUstensiles = (ustensiles) => {
     (ustensile) => !advancedSearchTags.includes(ustensile.toLowerCase())
   );
 
-  console.log(filteredUstensiles, ustensiles);
   filteredUstensiles.forEach((ustensile) => {
     const option = document.createElement('option');
     option.value = ustensile;
@@ -90,16 +88,11 @@ export const renderUstensiles = (ustensiles) => {
 // ********************************* Filtrage ********************************* \\
 
 export const getFilteredRecipes = (searchInputValue = '') => {
-  if (searchInputValue.length < 3) {
-    return recipes;
-  }
-
   const searchLower = searchInputValue.toLowerCase().trim();
   return recipes.filter(
     (recipe) =>
       recipe.name.toLowerCase().includes(searchLower) ||
       recipe.description.toLowerCase().includes(searchLower) ||
-      recipe.appliance.toLowerCase().includes(searchLower) ||
       recipe.ingredients.some((ing) =>
         ing.ingredient.toLowerCase().includes(searchLower)
       )
@@ -107,12 +100,12 @@ export const getFilteredRecipes = (searchInputValue = '') => {
 };
 
 export const getFilteredRecipesFromTags = (searchInputValue = '') => {
+  const searchLower = searchInputValue.toLowerCase().trim();
   let filteredRecipes = recipes.filter((recipe) => {
     const matchesSearchTags = searchTags.every(
       (tag) =>
         recipe.name.toLowerCase().includes(tag) ||
         recipe.description.toLowerCase().includes(tag) ||
-        recipe.appliance.toLowerCase().includes(tag) ||
         recipe.ingredients.some((ing) =>
           ing.ingredient.toLowerCase().includes(tag)
         )
@@ -120,6 +113,7 @@ export const getFilteredRecipesFromTags = (searchInputValue = '') => {
 
     const matchesAdvancedTags = advancedSearchTags.every(
       (tag) =>
+        recipe.ustensils.some((ust) => ust.toLowerCase().includes(tag)) ||
         recipe.appliance.toLowerCase().includes(tag) ||
         recipe.ingredients.some((ing) =>
           ing.ingredient.toLowerCase().includes(tag)
@@ -130,8 +124,7 @@ export const getFilteredRecipesFromTags = (searchInputValue = '') => {
   });
 
   // Filtre si un texte est saisi
-  if (searchInputValue.trim().length >= 3) {
-    const searchLower = searchInputValue.toLowerCase().trim();
+  if (searchLower.length >= 3) {
     filteredRecipes = filteredRecipes.filter(
       (recipe) =>
         recipe.name.toLowerCase().includes(searchLower) ||
@@ -151,21 +144,28 @@ export const initializeSearch = (
   searchForm,
   searchInput,
   tagsContainer,
-  ingredientDropdownTags,
   searchIngredient,
+  ingredientDropdownTags,
+  ingredientDropdown,
   searchAppareil,
   appareilDropdownTags,
+  appareilDropdown,
   searchUstensile,
-  ustensileDropdownTags
+  ustensileDropdownTags,
+  ustensileDropdown
 ) => {
   let filteredRecipes = getFilteredRecipesFromTags();
   let ingredient = getIngredients(filteredRecipes);
   let appareil = getAppareils(filteredRecipes);
+  let ustensile = getUstensiles(filteredRecipes);
 
   const updateDatas = () => {
-    renderRecipes(getFilteredRecipesFromTags());
-    renderIngredients(getIngredients(getFilteredRecipesFromTags()));
-    renderAppareils(getAppareils(getFilteredRecipesFromTags()));
+    const filteredRecipes = getFilteredRecipesFromTags();
+
+    renderRecipes(filteredRecipes);
+    renderIngredients(getIngredients(filteredRecipes));
+    renderAppareils(getAppareils(filteredRecipes));
+    renderUstensiles(getUstensiles(filteredRecipes));
   };
 
   searchForm.addEventListener('submit', (e) => {
@@ -181,16 +181,21 @@ export const initializeSearch = (
     searchInput.value = '';
     ingredient = getIngredients(filteredRecipes);
     appareil = getAppareils(filteredRecipes);
+    ustensile = getUstensiles(filteredRecipes);
     updateDatas();
   });
 
   searchInput.addEventListener('input', () => {
-    filteredRecipes = getFilteredRecipesFromTags(searchInput.value);
-    ingredient = getIngredients(filteredRecipes);
-    appareil = getAppareils(filteredRecipes);
-    updateDatas();
+    if (searchInput.trim().length >= 3) {
+      filteredRecipes = getFilteredRecipes(searchInput.value);
+      ingredient = getIngredients(filteredRecipes);
+      appareil = getAppareils(filteredRecipes);
+      ustensile = getUstensiles(filteredRecipes);
+      updateDatas();
+    }
   });
 
+  /******* INGREDIENT *******/
   searchIngredient.addEventListener('input', (e) => {
     const searchValue = e.target.value.toLowerCase().trim();
 
@@ -206,14 +211,19 @@ export const initializeSearch = (
 
     if (selectedValue === '') return;
 
-    addDropdownTag(selectedValue, ingredientDropdownTags);
-
+    addAdvancedTag(
+      selectedValue,
+      ingredientDropdownTags,
+      ingredientDropdown,
+      tagsContainer
+    );
     selectIngredient.value = '';
     ingredient = getIngredients(filteredRecipes);
     updateDatas();
-    document.querySelector('#ingredientDropdown').classList.toggle('hidden');
+    ingredientDropdown.classList.toggle('hidden');
   });
 
+  /******* APPAREIL *******/
   searchAppareil.addEventListener('input', (e) => {
     const searchValue = e.target.value.toLowerCase().trim();
 
@@ -229,12 +239,46 @@ export const initializeSearch = (
 
     if (selectedValue === '') return;
 
-    addDropdownTag(selectedValue, appareilDropdownTags);
+    addAdvancedTag(
+      selectedValue,
+      appareilDropdownTags,
+      appareilDropdown,
+      tagsContainer
+    );
 
     selectAppareil.value = '';
     appareil = getAppareils(filteredRecipes);
     updateDatas();
-    document.querySelector('#appareilDropdown').classList.toggle('hidden');
+    appareilDropdown.classList.toggle('hidden');
+  });
+
+  /******* USTENSILE *******/
+  searchUstensile.addEventListener('input', (e) => {
+    const searchValue = e.target.value.toLowerCase().trim();
+
+    const filteredUstensiles = ustensile.filter((ust) =>
+      ust.toLowerCase().includes(searchValue)
+    );
+
+    renderUstensiles(filteredUstensiles);
+  });
+
+  selectUstensile.addEventListener('change', (e) => {
+    const selectedValue = e.target.value.trim();
+
+    if (selectedValue === '') return;
+
+    addAdvancedTag(
+      selectedValue,
+      ustensileDropdownTags,
+      ustensileDropdown,
+      tagsContainer
+    );
+
+    selectUstensile.value = '';
+    ustensile = getUstensiles(filteredRecipes);
+    updateDatas();
+    ustensileDropdown.classList.toggle('hidden');
   });
 };
 
@@ -245,7 +289,7 @@ const createTagElement = (tagText, container, type) => {
   const tagTextNode = document.createTextNode(tagText);
   const removeButton = document.createElement('button');
   removeButton.textContent = 'x';
-  removeButton.classList.add('remove-tag', 'pl-6');
+  removeButton.classList.add('remove-tag', 'pl-6', 'cursor-pointer');
 
   removeButton.addEventListener('click', () => {
     if (type === 'search') {
@@ -276,18 +320,35 @@ const createTagElement = (tagText, container, type) => {
   container.appendChild(tagElement);
 };
 
-export const addTag = (tagText, tagsContainer) => {
+const addTag = (tagText, tagsContainer) => {
   searchTags.push(tagText.toLowerCase());
   createTagElement(tagText, tagsContainer, 'search');
 };
 
-const addDropdownTag = (tagText, container, tagsContainer) => {
+const addAdvancedTag = (tagText, container, dropdown, tagsContainer) => {
   if (advancedSearchTags.includes(tagText.toLowerCase())) return;
-
   advancedSearchTags.push(tagText.toLowerCase());
 
   const tagElement = document.createElement('div');
   tagElement.classList.add(
+    'tag',
+    'mx-2',
+    'px-4',
+    'h-[53px]',
+    'rounded-lg',
+    'flex',
+    'flex-row',
+    'justify-between',
+    'items-center',
+    'bg-amber-300'
+  );
+
+  const removeButton = document.createElement('button');
+  removeButton.textContent = 'x';
+  removeButton.classList.add('remove-tag', 'pl-6', 'cursor-pointer');
+
+  const dpTagElement = document.createElement('div');
+  dpTagElement.classList.add(
     'tag',
     'w-full',
     'px-4',
@@ -300,9 +361,9 @@ const addDropdownTag = (tagText, container, tagsContainer) => {
     'group'
   );
 
-  const removeButton = document.createElement('button');
-  removeButton.textContent = 'x';
-  removeButton.classList.add(
+  const dpRemoveButton = document.createElement('button');
+  dpRemoveButton.textContent = 'x';
+  dpRemoveButton.classList.add(
     'remove-tag',
     'ml-2',
     'hidden',
@@ -315,7 +376,17 @@ const addDropdownTag = (tagText, container, tagsContainer) => {
       (tag) => tag !== tagText.toLowerCase()
     );
     tagElement.remove();
-    renderIngredients(getIngredients(getFilteredRecipesFromTags()));
+    dpTagElement.remove();
+    renderRecipes(getFilteredRecipesFromTags());
+  });
+
+  dpRemoveButton.addEventListener('click', () => {
+    advancedSearchTags = advancedSearchTags.filter(
+      (tag) => tag !== tagText.toLowerCase()
+    );
+    tagElement.remove();
+    dpTagElement.remove();
+    dropdown.classList.toggle('hidden');
     renderRecipes(getFilteredRecipesFromTags());
   });
 
@@ -327,7 +398,12 @@ const addDropdownTag = (tagText, container, tagsContainer) => {
     'whitespace-nowrap'
   );
 
-  tagElement.appendChild(tagTextElement);
+  dpTagElement.appendChild(tagTextElement);
+  dpTagElement.appendChild(dpRemoveButton);
+
+  tagElement.appendChild(document.createTextNode(tagText));
   tagElement.appendChild(removeButton);
-  container.appendChild(tagElement);
+
+  tagsContainer.appendChild(tagElement);
+  container.appendChild(dpTagElement);
 };

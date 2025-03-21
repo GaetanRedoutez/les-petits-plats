@@ -31,7 +31,7 @@ const appareilDropdownTags = document.querySelector('#appareilDropdownTags');
 const ustensileFilter = document.querySelector('#searchUstensileBtn');
 const ustensileDropdown = document.querySelector('#ustensileDropdown');
 const searchUstensile = document.querySelector('#searchUstensile');
-const ustensileDropdownTags = document.querySelector('#appareilDropdownTags');
+const ustensileDropdownTags = document.querySelector('#ustensileDropdownTags');
 
 // Afficher les recettes au chargement de la page
 document.addEventListener('DOMContentLoaded', () => {
@@ -43,12 +43,15 @@ initializeSearch(
   searchForm,
   inputElement,
   tagsContainer,
-  ingredientDropdownTags,
   searchIngredient,
+  ingredientDropdownTags,
+  ingredientDropdown,
   searchAppareil,
   appareilDropdownTags,
+  appareilDropdown,
   searchUstensile,
-  ustensileDropdownTags
+  ustensileDropdownTags,
+  ustensileDropdown
 );
 
 // Fonction pour afficher ou masquer le dropdown des ingrédients
