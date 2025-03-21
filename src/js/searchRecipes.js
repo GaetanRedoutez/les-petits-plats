@@ -284,45 +284,38 @@ export const initializeSearch = (
 
 // ********************************* TAGS ********************************* \\
 
-const createTagElement = (tagText, container, type) => {
-  const tagElement = document.createElement('div');
-  const tagTextNode = document.createTextNode(tagText);
+const createSimpleTag = (tagText, container) => {
+  const lowerTag = tagText.toLowerCase().trim();
+
+  const tagNode = document.createElement('div');
+  tagNode.className =
+    'tag mx-2 px-4 h-[53px] rounded-lg flex flex-row justify-between items-center bg-amber-300';
+
+  const textNode = document.createElement('span');
+  textNode.textContent = tagText;
+  textNode.className = 'group-hover:font-bold truncate whitespace-nowrap';
+
   const removeButton = document.createElement('button');
   removeButton.textContent = 'x';
-  removeButton.classList.add('remove-tag', 'pl-6', 'cursor-pointer');
+  removeButton.className = 'remove-tag pl-6 cursor-pointer';
 
   removeButton.addEventListener('click', () => {
-    if (type === 'search') {
-      searchTags = searchTags.filter((tag) => tag !== tagText.toLowerCase());
-    } else {
-      advancedSearchTags = advancedSearchTags.filter(
-        (tag) => tag !== tagText.toLowerCase()
-      );
-    }
-    tagElement.remove();
+    searchTags = searchTags.filter((tag) => tag !== lowerTag);
+    tagNode.remove();
     renderRecipes(getFilteredRecipesFromTags());
   });
 
-  tagElement.appendChild(tagTextNode);
-  tagElement.appendChild(removeButton);
-  tagElement.classList.add(
-    'tag',
-    'mx-2',
-    'px-4',
-    'h-[53px]',
-    'rounded-lg',
-    'flex',
-    'flex-row',
-    'justify-between',
-    'items-center',
-    'bg-amber-300'
-  );
-  container.appendChild(tagElement);
+  tagNode.appendChild(textNode);
+  tagNode.appendChild(removeButton);
+
+  container.appendChild(tagNode);
 };
 
 const addTag = (tagText, tagsContainer) => {
-  searchTags.push(tagText.toLowerCase());
-  createTagElement(tagText, tagsContainer, 'search');
+  const lowerTag = tagText.toLowerCase();
+  if (searchTags.includes(lowerTag)) return;
+  searchTags.push(lowerTag);
+  createSimpleTag(tagText, tagsContainer);
 };
 
 const addAdvancedTag = (tagText, container, dropdown, tagsContainer) => {
