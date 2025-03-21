@@ -114,7 +114,7 @@ export const initializeSearch = (
   });
 
   selectAppareil.addEventListener('change', (e) => {
-    const selectedValue = e.target.value.trim();
+    const selectedValue = e.target.value.toLowerCase().trim();
 
     if (selectedValue === '') return;
 

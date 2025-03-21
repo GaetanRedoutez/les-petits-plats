@@ -18,7 +18,10 @@ const createSimpleTag = (tagText, container) => {
   removeButton.className = 'remove-tag pl-6 cursor-pointer';
 
   removeButton.addEventListener('click', () => {
-    searchTags = searchTags.filter((tag) => tag !== lowerTag);
+    const index = searchTags.indexOf(lowerTag);
+    if (index !== -1) {
+      searchTags.splice(index, 1);
+    }
     tagNode.remove();
     renderRecipes(getFilteredRecipes());
   });
