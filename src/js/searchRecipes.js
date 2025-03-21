@@ -12,78 +12,46 @@ const selectUstensile = document.querySelector('#selectUstensile');
 
 // ********************************* Display les options de dropdown ********************************* \\
 
-export const getIngredients = (recipes) => {
-  const ingredientsSet = new Set();
+const getFilteredValues = (recipes, getValues) => {
+  const values = new Set();
   recipes.forEach((recipe) => {
-    recipe.ingredients.forEach((ing) => {
-      ingredientsSet.add(ing.ingredient);
+    getValues(recipe).forEach((value) => values.add(value));
+  });
+  return Array.from(values).sort();
+};
+
+export const getIngredients = (recipes) =>
+  getFilteredValues(recipes, (recipe) =>
+    recipe.ingredients.map((ing) => ing.ingredient)
+  );
+
+export const getAppareils = (recipes) =>
+  getFilteredValues(recipes, (recipe) => [recipe.appliance]);
+
+export const getUstensiles = (recipes) =>
+  getFilteredValues(recipes, (recipe) => recipe.ustensils);
+
+const renderOptions = (selectElement, options) => {
+  selectElement.innerHTML = '';
+  options
+    .filter((option) => !advancedSearchTags.includes(option.toLowerCase()))
+    .forEach((optionText) => {
+      const option = document.createElement('option');
+      option.value = optionText;
+      option.textContent = optionText;
+      option.classList.add('text-sm', 'truncate');
+      selectElement.appendChild(option);
     });
-  });
-  return Array.from(ingredientsSet).sort();
 };
 
-export const renderIngredients = (ingredients) => {
-  selectIngredient.innerHTML = '';
-  const filteredIngredients = ingredients.filter(
-    (ingredient) => !advancedSearchTags.includes(ingredient.toLowerCase())
-  );
+export const renderIngredients = (ingredients) =>
+  renderOptions(selectIngredient, ingredients);
 
-  filteredIngredients.forEach((ingredient) => {
-    const option = document.createElement('option');
-    option.value = ingredient;
-    option.textContent = ingredient;
-    option.classList.add('text-sm', 'truncate');
-    selectIngredient.appendChild(option);
-  });
-};
+export const renderAppareils = (appareils) =>
+  renderOptions(selectAppareil, appareils);
 
-export const getAppareils = (recipes) => {
-  const appareilsSet = new Set();
-  recipes.forEach((recipe) => {
-    appareilsSet.add(recipe.appliance);
-  });
-  return Array.from(appareilsSet).sort();
-};
-
-export const renderAppareils = (appareils) => {
-  selectAppareil.innerHTML = '';
-  const filteredAppareils = appareils.filter(
-    (appareil) => !advancedSearchTags.includes(appareil.toLowerCase())
-  );
-
-  filteredAppareils.forEach((appareil) => {
-    const option = document.createElement('option');
-    option.value = appareil;
-    option.textContent = appareil;
-    option.classList.add('text-sm', 'truncate');
-    selectAppareil.appendChild(option);
-  });
-};
-
-export const getUstensiles = (recipes) => {
-  const ustensilesSet = new Set();
-  recipes.forEach((recipe) => {
-    recipe.ustensils.forEach((ust) => {
-      ustensilesSet.add(ust);
-    });
-  });
-  return Array.from(ustensilesSet).sort();
-};
-
-export const renderUstensiles = (ustensiles) => {
-  selectUstensile.innerHTML = '';
-  const filteredUstensiles = ustensiles.filter(
-    (ustensile) => !advancedSearchTags.includes(ustensile.toLowerCase())
-  );
-
-  filteredUstensiles.forEach((ustensile) => {
-    const option = document.createElement('option');
-    option.value = ustensile;
-    option.textContent = ustensile;
-    option.classList.add('text-sm', 'truncate');
-    selectUstensile.appendChild(option);
-  });
-};
+export const renderUstensiles = (ustensiles) =>
+  renderOptions(selectUstensile, ustensiles);
 
 // ********************************* Filtrage ********************************* \\
 
