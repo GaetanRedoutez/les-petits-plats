@@ -326,84 +326,48 @@ const addTag = (tagText, tagsContainer) => {
 };
 
 const addAdvancedTag = (tagText, container, dropdown, tagsContainer) => {
-  if (advancedSearchTags.includes(tagText.toLowerCase())) return;
-  advancedSearchTags.push(tagText.toLowerCase());
+  const lowerTag = tagText.toLowerCase();
+  if (advancedSearchTags.includes(lowerTag)) return;
+  advancedSearchTags.push(lowerTag);
 
-  const tagElement = document.createElement('div');
-  tagElement.classList.add(
-    'tag',
-    'mx-2',
-    'px-4',
-    'h-[53px]',
-    'rounded-lg',
-    'flex',
-    'flex-row',
-    'justify-between',
-    'items-center',
-    'bg-amber-300'
-  );
+  const removeTag = (isDpTags) => {
+    advancedSearchTags = advancedSearchTags.filter((tag) => tag !== lowerTag);
+    tagNode.remove();
+    dropdownTagNode.remove();
+    isDpTags && dropdown.classList.toggle('hidden');
+    renderRecipes(getFilteredRecipesFromTags());
+  };
 
+  // tagsContainer
+  const tagNode = document.createElement('div');
+  tagNode.className =
+    'tag mx-2 px-4 h-[53px] rounded-lg flex flex-row justify-between items-center bg-amber-300';
+  const tagSpan = document.createElement('span');
+  tagSpan.textContent = tagText;
+  tagSpan.className = 'group-hover:font-bold truncate whitespace-nowrap';
   const removeButton = document.createElement('button');
   removeButton.textContent = 'x';
-  removeButton.classList.add('remove-tag', 'pl-6', 'cursor-pointer');
+  removeButton.className = 'remove-tag pl-6 cursor-pointer';
+  removeButton.addEventListener('click', () => removeTag(false));
+  tagNode.appendChild(tagSpan);
+  tagNode.appendChild(removeButton);
 
-  const dpTagElement = document.createElement('div');
-  dpTagElement.classList.add(
-    'tag',
-    'w-full',
-    'px-4',
-    'h-[37px]',
-    'flex',
-    'justify-between',
-    'items-center',
-    'bg-amber-300',
-    'text-sm',
-    'group'
-  );
+  // DropdownTags
+  const dropdownTagNode = document.createElement('div');
+  dropdownTagNode.className =
+    'tag w-full px-4 h-[37px] flex justify-between items-center bg-amber-300 text-sm group';
+  const dropdownTagSpan = document.createElement('span');
+  dropdownTagSpan.textContent = tagText;
+  dropdownTagSpan.className =
+    'group-hover:font-bold truncate whitespace-nowrap';
+  const dropdownRemoveButton = document.createElement('button');
+  dropdownRemoveButton.textContent = 'x';
+  dropdownRemoveButton.className =
+    'remove-tag ml-2 hidden cursor-pointer group-hover:block';
+  dropdownRemoveButton.addEventListener('click', () => removeTag(true));
+  dropdownTagNode.appendChild(dropdownTagSpan);
+  dropdownTagNode.appendChild(dropdownRemoveButton);
 
-  const dpRemoveButton = document.createElement('button');
-  dpRemoveButton.textContent = 'x';
-  dpRemoveButton.classList.add(
-    'remove-tag',
-    'ml-2',
-    'hidden',
-    'cursor-pointer',
-    'group-hover:block'
-  );
-
-  removeButton.addEventListener('click', () => {
-    advancedSearchTags = advancedSearchTags.filter(
-      (tag) => tag !== tagText.toLowerCase()
-    );
-    tagElement.remove();
-    dpTagElement.remove();
-    renderRecipes(getFilteredRecipesFromTags());
-  });
-
-  dpRemoveButton.addEventListener('click', () => {
-    advancedSearchTags = advancedSearchTags.filter(
-      (tag) => tag !== tagText.toLowerCase()
-    );
-    tagElement.remove();
-    dpTagElement.remove();
-    dropdown.classList.toggle('hidden');
-    renderRecipes(getFilteredRecipesFromTags());
-  });
-
-  const tagTextElement = document.createElement('span');
-  tagTextElement.textContent = tagText;
-  tagTextElement.classList.add(
-    'group-hover:font-bold',
-    'truncate',
-    'whitespace-nowrap'
-  );
-
-  dpTagElement.appendChild(tagTextElement);
-  dpTagElement.appendChild(dpRemoveButton);
-
-  tagElement.appendChild(document.createTextNode(tagText));
-  tagElement.appendChild(removeButton);
-
-  tagsContainer.appendChild(tagElement);
-  container.appendChild(dpTagElement);
+  tagsContainer.appendChild(tagNode);
+  container.appendChild(dropdownTagNode);
 };
