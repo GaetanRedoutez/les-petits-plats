@@ -1,14 +1,16 @@
 import { renderRecipes } from './displayRecipes.js';
+import { getFilteredRecipes } from './utils/recipesFilterUtils.js';
+import { initializeSearch } from './searchRecipes.js';
 import {
-  getAppareils,
-  getFilteredRecipes,
-  getIngredients,
-  getUstensiles,
-  initializeSearch,
   renderAppareils,
   renderIngredients,
   renderUstensiles,
-} from './searchRecipes.js';
+} from './displayAdvanced.js';
+import {
+  getAppareils,
+  getIngredients,
+  getUstensiles,
+} from './utils/filterUtils.js';
 
 // Query selector
 const inputElement = document.querySelector('#search');
@@ -73,7 +75,6 @@ appareilFilter.addEventListener('click', () => {
 ustensileFilter.addEventListener('click', () => {
   const filteredRecipes = getFilteredRecipes();
   const ustensiles = getUstensiles(filteredRecipes);
-  console.log(ustensiles);
   renderUstensiles(ustensiles);
   ustensileDropdown.classList.toggle('hidden');
 });
