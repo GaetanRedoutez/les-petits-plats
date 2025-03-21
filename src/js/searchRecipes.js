@@ -55,52 +55,55 @@ export const renderUstensiles = (ustensiles) =>
 
 // ********************************* Filtrage ********************************* \\
 
-export const getFilteredRecipes = (searchInputValue = '') => {
-  const searchLower = searchInputValue.toLowerCase().trim();
-  return recipes.filter(
-    (recipe) =>
-      recipe.name.toLowerCase().includes(searchLower) ||
-      recipe.description.toLowerCase().includes(searchLower) ||
+const recipeMatchesSearch = (recipe, search) => {
+  const lowerSearch = search.toLowerCase().trim();
+  return (
+    recipe.name.toLowerCase().includes(lowerSearch) ||
+    recipe.description.toLowerCase().includes(lowerSearch) ||
+    recipe.ingredients.some((ing) =>
+      ing.ingredient.toLowerCase().includes(lowerSearch)
+    )
+  );
+};
+
+const recipeMatchesTags = (recipe, tags) =>
+  tags.every(
+    (tag) =>
+      recipe.name.toLowerCase().includes(tag) ||
+      recipe.description.toLowerCase().includes(tag) ||
       recipe.ingredients.some((ing) =>
-        ing.ingredient.toLowerCase().includes(searchLower)
+        ing.ingredient.toLowerCase().includes(tag)
       )
   );
+
+const recipeMatchesAdvancedTags = (recipe, tags) =>
+  tags.every(
+    (tag) =>
+      recipe.ustensils.some((ust) => ust.toLowerCase().includes(tag)) ||
+      recipe.appliance.toLowerCase().includes(tag) ||
+      recipe.ingredients.some((ing) =>
+        ing.ingredient.toLowerCase().includes(tag)
+      )
+  );
+
+export const getFilteredRecipes = (searchInputValue = '') => {
+  const searchLower = searchInputValue.toLowerCase().trim();
+  return recipes.filter((recipe) => recipeMatchesSearch(recipe, searchLower));
 };
 
 export const getFilteredRecipesFromTags = (searchInputValue = '') => {
   const searchLower = searchInputValue.toLowerCase().trim();
+
   let filteredRecipes = recipes.filter((recipe) => {
-    const matchesSearchTags = searchTags.every(
-      (tag) =>
-        recipe.name.toLowerCase().includes(tag) ||
-        recipe.description.toLowerCase().includes(tag) ||
-        recipe.ingredients.some((ing) =>
-          ing.ingredient.toLowerCase().includes(tag)
-        )
+    return (
+      recipeMatchesTags(recipe, searchTags) &&
+      recipeMatchesAdvancedTags(recipe, advancedSearchTags)
     );
-
-    const matchesAdvancedTags = advancedSearchTags.every(
-      (tag) =>
-        recipe.ustensils.some((ust) => ust.toLowerCase().includes(tag)) ||
-        recipe.appliance.toLowerCase().includes(tag) ||
-        recipe.ingredients.some((ing) =>
-          ing.ingredient.toLowerCase().includes(tag)
-        )
-    );
-
-    return matchesSearchTags && matchesAdvancedTags;
   });
 
-  // Filtre si un texte est saisi
   if (searchLower.length >= 3) {
-    filteredRecipes = filteredRecipes.filter(
-      (recipe) =>
-        recipe.name.toLowerCase().includes(searchLower) ||
-        recipe.description.toLowerCase().includes(searchLower) ||
-        recipe.appliance.toLowerCase().includes(searchLower) ||
-        recipe.ingredients.some((ing) =>
-          ing.ingredient.toLowerCase().includes(searchLower)
-        )
+    filteredRecipes = filteredRecipes.filter((recipe) =>
+      recipeMatchesSearch(recipe, searchLower)
     );
   }
 
@@ -154,7 +157,7 @@ export const initializeSearch = (
   });
 
   searchInput.addEventListener('input', () => {
-    if (searchInput.trim().length >= 3) {
+    if (searchInput.length >= 3) {
       filteredRecipes = getFilteredRecipes(searchInput.value);
       ingredient = getIngredients(filteredRecipes);
       appareil = getAppareils(filteredRecipes);
