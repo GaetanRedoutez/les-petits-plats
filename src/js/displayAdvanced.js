@@ -8,15 +8,25 @@ const selectElements = {
 
 const renderOptions = (selectElement, options) => {
   selectElement.innerHTML = '';
-  options
-    .filter((option) => !advancedSearchTags.includes(option.toLowerCase()))
-    .forEach((optionText) => {
-      const option = document.createElement('option');
-      option.value = optionText;
-      option.textContent = optionText;
-      option.classList.add('text-sm', 'truncate');
-      selectElement.appendChild(option);
-    });
+  const allowedOptions = options.filter(
+    (option) => !advancedSearchTags.includes(option.toLowerCase())
+  );
+
+  allowedOptions.forEach((optionText) => {
+    const option = document.createElement('option');
+    option.value = optionText;
+    option.textContent = optionText;
+    option.classList.add('text-sm', 'truncate');
+    selectElement.appendChild(option);
+  });
+
+  if (allowedOptions.length > 0 && allowedOptions.length < 5) {
+    selectElement.size = allowedOptions.length;
+  } else if (allowedOptions.length === 0) {
+    selectElement.size = 1;
+  } else {
+    selectElement.size = 5;
+  }
 };
 
 export const renderIngredients = (ingredients) =>
