@@ -24,7 +24,7 @@ const selectUstensile = document.querySelector('#selectUstensile');
 const updateDatas = (searchInputValue = '', advancedSearchTags) => {
   const filteredRecipes = getFilteredRecipes(searchInputValue);
 
-  renderRecipes(filteredRecipes);
+  renderRecipes(filteredRecipes, searchInputValue, advancedSearchTags);
   renderIngredients(getIngredients(filteredRecipes), advancedSearchTags);
   renderAppareils(getAppareils(filteredRecipes), advancedSearchTags);
   renderUstensiles(getUstensiles(filteredRecipes), advancedSearchTags);

@@ -160,6 +160,7 @@ export const renderRecipes = (recipes, inputValue) => {
   const recipeCount = document.querySelector('#recipe-count');
 
   const infoText = document.createElement('p');
+  const spanElement = document.createElement('span');
   container.innerHTML = '';
 
   if (recipes.length >= 1) {
@@ -169,7 +170,17 @@ export const renderRecipes = (recipes, inputValue) => {
     });
     recipeCount.textContent = recipes.length;
   } else {
-    infoText.textContent = `Aucune recette ne contient ${inputValue} vous pouvez chercher « tarte aux pommes », « poisson », etc.`;
+    spanElement.textContent = inputValue;
+    infoText.textContent = `Aucune recette ne contient `;
+    infoText.appendChild(spanElement);
+    infoText.appendChild(
+      document.createTextNode(
+        ', vous pouvez chercher « tarte aux pommes », « poisson », etc. »'
+      )
+    );
+
+    spanElement.className = 'text-black';
+    infoText.className = 'text-lg text-nowrap text-[#7A7A7A] mt-10';
     container.appendChild(infoText);
     recipeCount.textContent = recipes.length;
   }
