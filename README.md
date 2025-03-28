@@ -24,3 +24,7 @@ La capacité à analyser un problème informatique et à développer un algorith
 Comprendre et optimiser la performance des algorithmes est essentiel, surtout dans le contexte de la recherche de données. De plus, l'application des principes du Green Code montre une conscience des impacts environnementaux du développement logiciel.
 
 Ces compétences vous prépareront à travailler sur des projets complexes et à développer des solutions informatiques innovantes et responsables.
+
+## Lien JSBench.ch
+
+https://jsben.ch/DFSZO
