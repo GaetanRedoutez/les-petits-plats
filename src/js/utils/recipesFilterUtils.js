@@ -3,49 +3,112 @@ import recipes from '../data/recipes.js';
 
 const recipeMatchesSearch = (recipe, search) => {
   const lowerSearch = search.toLowerCase().trim();
-  return (
+
+  if (
     recipe.name.toLowerCase().includes(lowerSearch) ||
-    recipe.description.toLowerCase().includes(lowerSearch) ||
-    recipe.ingredients.some((ing) =>
-      ing.ingredient.toLowerCase().includes(lowerSearch)
-    )
-  );
+    recipe.description.toLowerCase().includes(lowerSearch)
+  ) {
+    return true;
+  }
+
+  let i = 0;
+  while (i < recipe.ingredients.length) {
+    if (recipe.ingredients[i].ingredient.toLowerCase().includes(lowerSearch)) {
+      return true;
+    }
+    i++;
+  }
+
+  return false;
 };
 
-const recipeMatchesTags = (recipe, tags) =>
-  tags.every(
-    (tag) =>
-      recipe.name.toLowerCase().includes(tag) ||
-      recipe.description.toLowerCase().includes(tag) ||
-      recipe.ingredients.some((ing) =>
-        ing.ingredient.toLowerCase().includes(tag)
-      )
-  );
+const recipeMatchesTags = (recipe, tags) => {
+  for (let i = 0; i < tags.length; i++) {
+    const tag = tags[i];
+    let found = false;
 
-const recipeMatchesAdvancedTags = (recipe, tags) =>
-  tags.every(
-    (tag) =>
-      recipe.ustensils.some((ust) => ust.toLowerCase().includes(tag)) ||
-      recipe.appliance.toLowerCase().includes(tag) ||
-      recipe.ingredients.some((ing) =>
-        ing.ingredient.toLowerCase().includes(tag)
-      )
-  );
+    if (
+      recipe.name.toLowerCase().includes(tag) ||
+      recipe.description.toLowerCase().includes(tag)
+    ) {
+      found = true;
+    }
+
+    let j = 0;
+    while (j < recipe.ingredients.length) {
+      if (recipe.ingredients[j].ingredient.toLowerCase().includes(tag)) {
+        found = true;
+        break;
+      }
+      j++;
+    }
+
+    if (!found) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+const recipeMatchesAdvancedTags = (recipe, tags) => {
+  for (let i = 0; i < tags.length; i++) {
+    const tag = tags[i];
+    let found = false;
+
+    let j = 0;
+    while (j < recipe.ustensils.length) {
+      if (recipe.ustensils[j].toLowerCase().includes(tag)) {
+        found = true;
+        break;
+      }
+      j++;
+    }
+
+    if (recipe.appliance.toLowerCase().includes(tag)) {
+      found = true;
+    }
+
+    j = 0;
+    while (j < recipe.ingredients.length) {
+      if (recipe.ingredients[j].ingredient.toLowerCase().includes(tag)) {
+        found = true;
+        break;
+      }
+      j++;
+    }
+
+    if (!found) {
+      return false;
+    }
+  }
+
+  return true;
+};
 
 export const getFilteredRecipes = (searchInputValue = '') => {
   const searchLower = searchInputValue.toLowerCase().trim();
+  let filteredRecipes = [];
 
-  let filteredRecipes = recipes.filter((recipe) => {
-    return (
-      recipeMatchesTags(recipe, searchTags) &&
-      recipeMatchesAdvancedTags(recipe, advancedSearchTags)
-    );
-  });
+  for (let i = 0; i < recipes.length; i++) {
+    if (
+      recipeMatchesTags(recipes[i], searchTags) &&
+      recipeMatchesAdvancedTags(recipes[i], advancedSearchTags)
+    ) {
+      filteredRecipes.push(recipes[i]);
+    }
+  }
 
   if (searchLower.length >= 3) {
-    filteredRecipes = filteredRecipes.filter((recipe) =>
-      recipeMatchesSearch(recipe, searchLower)
-    );
+    let finalRecipes = [];
+
+    for (let i = 0; i < filteredRecipes.length; i++) {
+      if (recipeMatchesSearch(filteredRecipes[i], searchLower)) {
+        finalRecipes.push(filteredRecipes[i]);
+      }
+    }
+
+    filteredRecipes = finalRecipes;
   }
 
   return filteredRecipes;
