@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Les Petits Plats</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./index.css" />
+
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script type="module" src="./js/index.js" defer></script>
+  </head>
+
+  <body class="max-w-[1440px] font-[Anton] min-h-screen mx-auto">
+    <header
+      class="bg-[url(../public/images/assets/background_img.webp)] bg-cover bg-center h-[667px] flex flex-col justify-center overflow-hidden"
+    >
+      <div class="grid grid-rows-3 h-full">
+        <div class="self-start mt-12 ml-16">
+          <img
+            class="w-[207px] h-[25px]"
+            src="../public/images/assets/logo.svg"
+            alt="Logo Les Petis Plats"
+          />
+          <h1 class="hidden">Les Petits Plats</h1>
+        </div>
+        <div class="self-center w-full">
+          <h2
+            class="text-amber-300 text-[44px]/[66px] max-w-[890px] text-center mx-auto"
+          >
+            CHERCHEZ PARMI PLUS DE 1500 RECETTES DU QUOTIDIEN, SIMPLES ET
+            DÉLICIEUSES
+          </h2>
+        </div>
+
+        <div class="flex justify-center font-[Manrope]">
+          <div class="relative">
+            <form id="searchForm" class="relative">
+              <input
+                id="search"
+                type="text"
+                class="bg-white w-[954px] h-[72px] rounded-xl pl-9 pr-14 border border-gray-300 focus:outline-none"
+                placeholder="Rechercher une recette, un ingrédient, ..."
+              />
+              <button id="searchBarBtn" type="submit" class="cursor-pointer">
+                <img
+                  src="../public/images/assets/search.svg"
+                  alt="Search Icon"
+                  class="absolute right-4 top-[10px]"
+                />
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex flex-col flex-grow min-h-screen bg-gray-200 pb-52">
+      <div class="flex flex-row justify-between mt-5 mx-24">
+        <div class="font-[Manrope] flex flex-row gap-16">
+          <div class="w-48 relative bg-white rounded-xl">
+            <button id="searchIngredientBtn" class="w-full">
+              <label
+                for="searchIngredient"
+                class="text-sm p-4 font-medium cursor-pointer flex flex-row justify-between"
+              >
+                <p>Ingrédient</p>
+                <img src="../public/images/assets/arrow.svg" alt="arrow" />
+              </label>
+            </button>
+
+            <div class="absolute top-11 w-48">
+              <div
+                id="ingredientDropdown"
+                class="hidden bg-white relative z-10 rounded-b-lg"
+              >
+                <div
+                  class="mx-2 mb-2 border rounded-lg border-gray-200 flex items-center p-2 relative"
+                >
+                  <input
+                    type="text"
+                    id="searchIngredient"
+                    class="focus:outline-none py-1 pr-8 text-sm flex-grow overflow-hidden"
+                    placeholder="Rechercher..."
+                  />
+                  <i
+                    class="fa-solid fa-magnifying-glass text-gray-400 absolute right-2"
+                  ></i>
+                </div>
+                <div id="ingredientDropdownTags"></div>
+
+                <select
+                  id="selectIngredient"
+                  multiple
+                  class="w-full p-4 border border-none bg-white rounded-md outline-none"
+                ></select>
+              </div>
+            </div>
+          </div>
+          <div class="w-48 relative bg-white rounded-xl">
+            <button id="searchAppareilBtn" class="w-full">
+              <label
+                for="searchAppareil"
+                class="text-sm p-4 font-medium cursor-pointer flex flex-row justify-between"
+              >
+                <p>Appareils</p>
+                <img src="../public/images/assets/arrow.svg" alt="arrow" />
+              </label>
+            </button>
+
+            <div class="absolute top-11 w-48">
+              <div
+                id="appareilDropdown"
+                class="hidden bg-white relative z-10 rounded-b-lg"
+              >
+                <div
+                  class="mx-2 mb-2 border rounded-lg border-gray-200 flex items-center p-2 relative"
+                >
+                  <input
+                    type="text"
+                    id="searchAppareil"
+                    class="focus:outline-none py-1 pr-8 text-sm flex-grow overflow-hidden"
+                    placeholder="Rechercher..."
+                  />
+                  <i
+                    class="fa-solid fa-magnifying-glass text-gray-400 absolute right-2"
+                  ></i>
+                </div>
+                <div id="appareilDropdownTags"></div>
+
+                <select
+                  id="selectAppareil"
+                  multiple
+                  class="w-full p-4 border border-none bg-white rounded-md outline-none"
+                ></select>
+              </div>
+            </div>
+          </div>
+          <div class="w-48 relative bg-white rounded-xl">
+            <button id="searchUstensileBtn" class="w-full">
+              <label
+                for="searchUstensile"
+                class="text-sm p-4 font-medium cursor-pointer flex flex-row justify-between"
+              >
+                <p>Ustensiles</p>
+                <img src="../public/images/assets/arrow.svg" alt="arrow" />
+              </label>
+            </button>
+
+            <div class="absolute top-11 w-48">
+              <div
+                id="ustensileDropdown"
+                class="hidden bg-white relative z-10 rounded-b-lg"
+              >
+                <div
+                  class="mx-2 mb-2 border rounded-lg border-gray-200 flex items-center p-2 relative"
+                >
+                  <input
+                    type="text"
+                    id="searchUstensile"
+                    class="focus:outline-none py-1 pr-8 text-sm flex-grow overflow-hidden"
+                    placeholder="Rechercher..."
+                  />
+                  <i
+                    class="fa-solid fa-magnifying-glass text-gray-400 absolute right-2"
+                  ></i>
+                </div>
+                <div id="ustensileDropdownTags"></div>
+
+                <select
+                  id="selectUstensile"
+                  multiple
+                  class="w-full p-4 border border-none bg-white rounded-md outline-none"
+                ></select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="self-center"><span id="recipe-count"></span> recettes</div>
+      </div>
+      <div
+        id="tagsContainer"
+        class="flex gap-2 mt-4 mx-22 font-[Manrope]"
+      ></div>
+      <div>
+        <section
+          id="recipes"
+          class="grid grid-cols-3 gap-12 mx-24 mt-10"
+        ></section>
+      </div>
+    </main>
+  </body>
+</html>
